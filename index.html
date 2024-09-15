@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Mamadas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="container mt-4">
+        <div id="userGreeting" class="mb-4"></div>
+        <h1 class="mb-4">Registro de Mamadas</h1>
+        
+        <!-- Formulário para cadastrar novo bebê -->
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#newBabyModal">Cadastrar Novo Bebê</button>
+        
+        <!-- Seletor de bebê -->
+        <div class="mb-3">
+            <label for="babySelect" class="form-label">Selecione o Bebê</label>
+            <select class="form-select" id="babySelect">
+                <option value="">Escolha um bebê</option>
+            </select>
+        </div>
+        
+        <!-- Calendário -->
+        <div class="mb-3">
+            <label for="dateSelect" class="form-label">Selecione a Data</label>
+            <input type="text" class="form-control" id="dateSelect">
+        </div>
+        
+        <!-- Formulário de registro de mamada -->
+        <form id="feedingForm">
+            <div class="mb-3">
+                <label for="startTime" class="form-label">Hora Inicial</label>
+                <input type="time" class="form-control" id="startTime" required>
+            </div>
+            <div class="mb-3">
+                <label for="endTime" class="form-label">Hora Final</label>
+                <input type="time" class="form-control" id="endTime" required>
+            </div>
+            <div class="mb-3">
+                <label for="formulaAmount" class="form-label">Quantidade de Fórmula (ml)</label>
+                <input type="number" class="form-control" id="formulaAmount" min="0" step="1">
+            </div>
+            <button type="submit" class="btn btn-primary">Registrar Mamada</button>
+        </form>
+        <div id="feedingList" class="mt-4"></div>
+        <div id="totalFormula" class="alert alert-success mt-3"></div>
+    </div>
+
+    <!-- Modal para cadastro de novo bebê -->
+    <div class="modal fade" id="newBabyModal" tabindex="-1" aria-labelledby="newBabyModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newBabyModalLabel">Cadastrar Novo Bebê</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newBabyForm">
+                        <div class="mb-3">
+                            <label for="babyName" class="form-label">Nome do Bebê</label>
+                            <input type="text" class="form-control" id="babyName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="birthDate" class="form-label">Data de Nascimento</label>
+                            <input type="date" class="form-control" id="birthDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="motherName" class="form-label">Nome da Mãe</label>
+                            <input type="text" class="form-control" id="motherName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fatherName" class="form-label">Nome do Pai</label>
+                            <input type="text" class="form-control" id="fatherName" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="saveBabyBtn">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="login.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
