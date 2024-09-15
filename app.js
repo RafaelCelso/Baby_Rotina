@@ -25,17 +25,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateBabySelect() {
         babySelect.innerHTML = '<option value="">Escolha um bebê</option>';
-        currentUser.babies.forEach((baby, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            option.textContent = baby.name;
-            babySelect.appendChild(option);
-        });
-        
-        // Pré-selecionar o primeiro bebê
-        if (currentUser.babies.length > 0) {
+        if (currentUser.babies && currentUser.babies.length > 0) {
+            currentUser.babies.forEach((baby, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = baby.name;
+                babySelect.appendChild(option);
+            });
+            
+            // Pré-selecionar o primeiro bebê
             babySelect.value = "0";
             displayFeedings(0);
+        } else {
+            feedingList.innerHTML = '<p>Nenhum bebê cadastrado. Por favor, adicione um bebê.</p>';
         }
     }
 
@@ -252,10 +254,12 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('users', JSON.stringify(users));
     }
 
+    // Chamar updateBabySelect() imediatamente após o login
     updateBabySelect();
 
     babySelect.addEventListener('change', (e) => {
         displayFeedings(e.target.value);
+        resetFeedingForm();
     });
 
     newBabyForm.addEventListener('submit', (e) => {
@@ -293,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         
         const selectedBabyIndex = babySelect.value;
-        if (!selectedBabyIndex) {
+        if (selectedBabyIndex === '') {
             alert('Por favor, selecione um bebê');
             return;
         }
@@ -303,41 +307,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const endTime = document.getElementById('endTime').value;
         const formulaAmount = parseInt(document.getElementById('formulaAmount').value) || 0;
 
+        if (!startTime || !endTime) {
+            alert('Por favor, preencha os horários de início e fim da mamada');
+            return;
+        }
+
         const newFeeding = {
             startTime,
             endTime,
             formulaAmount
         };
 
-        const submitButton = e.target.querySelector('button[type="submit"]');
-        const editIndex = submitButton.dataset.editIndex;
-
-        if (editIndex !== undefined) {
-            // Modo de edição
-            baby.feedings[selectedDate].splice(editIndex, 0, newFeeding);
-            delete submitButton.dataset.editIndex;
-            submitButton.textContent = 'Registrar Mamada';
-
-            // Remover o botão "Cancelar"
-            const cancelButton = feedingForm.querySelector('button[type="button"]');
-            if (cancelButton) {
-                cancelButton.remove();
-            }
-        } else {
-            // Novo registro
-            if (!baby.feedings[selectedDate]) baby.feedings[selectedDate] = [];
-            baby.feedings[selectedDate].push(newFeeding);
-        }
+        if (!baby.feedings) baby.feedings = {};
+        if (!baby.feedings[selectedDate]) baby.feedings[selectedDate] = [];
+        baby.feedings[selectedDate].push(newFeeding);
 
         updateUserData();
         displayFeedings(selectedBabyIndex);
-
-        // Reiniciar a contagem regressiva com a nova mamada
-        if (selectedDate === new Date().toISOString().split('T')[0]) {
-            startCountdown(newFeeding);
-        }
-
-        feedingForm.reset();
+        resetFeedingForm();
     });
 
     // Verificar e limpar mamadas antigas à meia-noite
@@ -373,6 +360,58 @@ document.addEventListener('DOMContentLoaded', () => {
             cancelEdit();
         }
     });
+
+    // Adicionar evento de clique ao botão Salvar do modal de novo bebê
+    document.getElementById('saveBabyBtn').addEventListener('click', function() {
+        const babyName = document.getElementById('babyName').value;
+        const birthDate = document.getElementById('birthDate').value;
+        const motherName = document.getElementById('motherName').value;
+        const fatherName = document.getElementById('fatherName').value;
+
+        if (babyName && birthDate && motherName && fatherName) {
+            const newBaby = {
+                name: babyName,
+                birthDate: birthDate,
+                mother: motherName,
+                father: fatherName,
+                feedings: {}
+            };
+
+            saveBaby(newBaby);
+
+            // Fechar o modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('newBabyModal'));
+            modal.hide();
+
+            // Limpar o formulário
+            document.getElementById('newBabyForm').reset();
+        } else {
+            alert('Por favor, preencha todos os campos.');
+        }
+    });
+
+    function resetFeedingForm() {
+        feedingForm.reset();
+        const submitButton = feedingForm.querySelector('button[type="submit"]');
+        submitButton.textContent = 'Registrar Mamada';
+        delete submitButton.dataset.editIndex;
+
+        // Remover o botão "Cancelar" se existir
+        const cancelButton = feedingForm.querySelector('button[type="button"]');
+        if (cancelButton) {
+            cancelButton.remove();
+        }
+    }
+
+    // Adicionar função para salvar novo bebê
+    function saveBaby(newBaby) {
+        if (!currentUser.babies) {
+            currentUser.babies = [];
+        }
+        currentUser.babies.push(newBaby);
+        updateUserData();
+        updateBabySelect();
+    }
 });
 
 // Registro do Service Worker para PWA
@@ -381,4 +420,5 @@ if ('serviceWorker' in navigator) {
         .then((reg) => console.log('Service worker registrado', reg))
         .catch((err) => console.log('Erro ao registrar service worker', err));
 }
+
 
