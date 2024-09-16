@@ -458,11 +458,29 @@ document.addEventListener('DOMContentLoaded', () => {
             saveBaby(newBaby);
 
             // Fechar o modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('newBabyModal'));
-            modal.hide();
+            const modalElement = document.getElementById('newBabyModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            modalInstance.hide();
+
+            // Adicionar um evento para quando o modal terminar de fechar
+            modalElement.addEventListener('hidden.bs.modal', function onModalHidden() {
+                // Remover o backdrop manualmente
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) {
+                    backdrop.remove();
+                }
+
+                // Restaurar o scroll
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+
+                // Remover este event listener para evitar múltiplas chamadas
+                modalElement.removeEventListener('hidden.bs.modal', onModalHidden);
+            });
 
             // Limpar o formulário
-            document.getElementById('newBabyForm').reset();
+            newBabyForm.reset();
         } else {
             alert('Por favor, preencha todos os campos.');
         }
