@@ -382,7 +382,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!baby.feedings) baby.feedings = {};
         if (!baby.feedings[selectedDate]) baby.feedings[selectedDate] = [];
-        baby.feedings[selectedDate].push(newFeeding);
+
+        const submitButton = feedingForm.querySelector('button[type="submit"]');
+        const editIndex = submitButton.dataset.editIndex;
+
+        if (editIndex !== undefined) {
+            // Atualizar o registro existente
+            baby.feedings[selectedDate][editIndex] = newFeeding;
+        } else {
+            // Adicionar novo registro
+            baby.feedings[selectedDate].push(newFeeding);
+        }
 
         updateUserData();
         displayFeedings(selectedBabyIndex);
