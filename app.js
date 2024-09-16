@@ -230,26 +230,13 @@ document.addEventListener('DOMContentLoaded', () => {
         feedingForm.reset();
     }
 
-    function showDeleteConfirmModal(index) {
-        const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-        
-        confirmDeleteBtn.onclick = () => {
-            currentUser.babies.splice(index, 1);
-            updateUserData();
-            updateBabySelect();
-            updateBabyList();
-            deleteModal.hide();
-        };
-        
-        deleteModal.show();
-    }
-
     function deleteFeeding(event) {
         const index = event.target.dataset.index;
         const babyIndex = babySelect.value;
         
-        showDeleteConfirmModal(index);
+        const deletedFeeding = currentUser.babies[babyIndex].feedings[selectedDate].splice(index, 1)[0];
+        updateUserData();
+        displayFeedings(babyIndex);
     }
 
     function updateUserData() {
@@ -426,12 +413,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Adicionar botão de logout
     const logoutBtn = document.createElement('button');
     logoutBtn.textContent = 'Sair';
-    logoutBtn.classList.add('btn', 'btn-danger', 'mt-3', 'mb-4');
+    logoutBtn.classList.add('btn', 'btn-danger', 'mt-3', 'btn-logout');
+    logoutBtn.style.paddingBottom = '30px';
+    logoutBtn.style.marginBottom = '30px';
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('currentUser');
         window.location.href = 'login.html';
     });
     document.querySelector('.container').appendChild(logoutBtn);
+
+    // Ajuste para telas menores
+    if (window.innerWidth <= 768) {
+        logoutBtn.style.paddingBottom = '40px';
+        logoutBtn.style.marginBottom = '40px';
+    }
 
     // Adicionar evento de escuta para o botão "Cancelar"
     document.addEventListener('click', (e) => {
@@ -585,7 +580,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // Função para excluir um bebê
     function deleteBaby(event) {
         const index = event.target.dataset.index;
-        showDeleteConfirmModal(index);
+        const deletedBaby = currentUser.babies.splice(index, 1)[0];
+        updateUserData();
+        updateBabySelect();
+        updateBabyList();
+        
+        // Verifica se o bebê excluído era o selecionado
+        if (babySelect.value === index.toString()) {
+            babySelect.value = '';
+            selectedBabyName.textContent = 'Nenhum bebê selecionado';
+            displayFeedings(); // Limpa a lista de mamadas
+        } else if (parseInt(babySelect.value) > index) {
+            // Ajusta o índice selecionado se um bebê anterior foi removido
+            babySelect.value = (parseInt(babySelect.value) - 1).toString();
+        }
+        
+        if (currentUser.babies.length === 0) {
+            babySelect.value = '';
+            selectedBabyName.textContent = 'Nenhum bebê selecionado';
+            displayFeedings();
+        }
+        
+        // Fechar o modal da lista de bebês
+        const babyListModal = bootstrap.Modal.getInstance(document.getElementById('babyListModal'));
+        if (babyListModal) {
+            babyListModal.hide();
+        }
     }
 
     // Função para selecionar um bebê
