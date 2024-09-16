@@ -231,19 +231,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function deleteFeeding(event) {
-        if (confirm('Tem certeza que deseja excluir este registro de mamada?')) {
-            const index = event.target.dataset.index;
-            const babyIndex = babySelect.value;
+        const index = event.target.dataset.index;
+        const babyIndex = babySelect.value;
+        
+        // Criar uma instância do modal
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        
+        // Mostrar o modal
+        deleteModal.show();
+        
+        // Configurar o botão de confirmação
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        confirmDeleteBtn.onclick = () => {
             const baby = currentUser.babies[babyIndex];
-
             baby.feedings[selectedDate].splice(index, 1);
-
-            // Atualizar o localStorage
             updateUserData();
-
-            // Atualizar a exibição
             displayFeedings(babyIndex);
-        }
+            deleteModal.hide();
+        };
     }
 
     function updateUserData() {
