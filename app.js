@@ -293,6 +293,68 @@ document.addEventListener('DOMContentLoaded', () => {
         newBabyForm.reset();
     });
 
+    const playerContainer = document.createElement('div');
+    playerContainer.classList.add('player-container', 'mt-3');
+    playerContainer.innerHTML = `
+        <button id="playBtn" class="btn btn-success"><i class="fas fa-play"></i></button>
+        <button id="pauseBtn" class="btn btn-warning" disabled><i class="fas fa-pause"></i></button>
+        <button id="stopBtn" class="btn btn-danger" disabled><i class="fas fa-stop"></i></button>
+        <span id="timer" class="ms-3">00:00:00</span>
+    `;
+    feedingForm.parentNode.insertBefore(playerContainer, feedingForm);
+
+    const playBtn = document.getElementById('playBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const timerDisplay = document.getElementById('timer');
+
+    let startTime;
+    let elapsedTime = 0;
+    let timerInterval;
+    let isPaused = false;
+
+    function updateTimerDisplay() {
+        const currentTime = Date.now();
+        const totalElapsedTime = isPaused ? elapsedTime : elapsedTime + (currentTime - startTime);
+        const hours = Math.floor(totalElapsedTime / 3600000);
+        const minutes = Math.floor((totalElapsedTime % 3600000) / 60000);
+        const seconds = Math.floor((totalElapsedTime % 60000) / 1000);
+        timerDisplay.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    playBtn.addEventListener('click', () => {
+        startTime = Date.now();
+        if (isPaused) {
+            startTime -= elapsedTime;
+            isPaused = false;
+        }
+        timerInterval = setInterval(updateTimerDisplay, 1000);
+        playBtn.disabled = true;
+        pauseBtn.disabled = false;
+        stopBtn.disabled = false;
+        document.getElementById('startTime').value = new Date().toTimeString().slice(0, 5);
+    });
+
+    pauseBtn.addEventListener('click', () => {
+        clearInterval(timerInterval);
+        elapsedTime += Date.now() - startTime;
+        isPaused = true;
+        playBtn.disabled = false;
+        pauseBtn.disabled = true;
+    });
+
+    stopBtn.addEventListener('click', () => {
+        clearInterval(timerInterval);
+        const endTime = new Date().toTimeString().slice(0, 5);
+        document.getElementById('endTime').value = endTime;
+        elapsedTime = 0;
+        timerDisplay.textContent = '00:00:00';
+        playBtn.disabled = false;
+        pauseBtn.disabled = true;
+        stopBtn.disabled = true;
+    });
+
+    // Modificar o evento de submit do feedingForm
     feedingForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
@@ -308,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formulaAmount = parseInt(document.getElementById('formulaAmount').value) || 0;
 
         if (!startTime || !endTime) {
-            alert('Por favor, preencha os horários de início e fim da mamada');
+            alert('Por favor, use o player para registrar os horários de início e fim da mamada');
             return;
         }
 
@@ -325,6 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUserData();
         displayFeedings(selectedBabyIndex);
         resetFeedingForm();
+        timerDisplay.textContent = '00:00:00';
     });
 
     // Verificar e limpar mamadas antigas à meia-noite
