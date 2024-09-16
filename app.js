@@ -413,9 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Adicionar botão de logout
     const logoutBtn = document.createElement('button');
     logoutBtn.textContent = 'Sair';
-    logoutBtn.classList.add('btn', 'btn-danger', 'mt-3', 'btn-logout');
-    logoutBtn.style.paddingBottom = '30px';
-    logoutBtn.style.marginBottom = '30px';
+    logoutBtn.classList.add('btn', 'btn-danger', 'mt-3', 'mb-4', 'btn-logout');
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('currentUser');
         window.location.href = 'login.html';
