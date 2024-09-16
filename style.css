@@ -24,3 +24,58 @@ body {
     }
 }
 
+#selectedBabyName {
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+#selectedBabyName:empty {
+    display: none;
+}
+
+#selectedBabyName:not(:empty) {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.player-container {
+    min-height: 150px;
+    background: linear-gradient(145deg, #f0f0f0, #e6e6e6);
+    border: 2px solid #007bff;
+    transition: all 0.3s ease;
+}
+
+.player-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 123, 255, 0.2) !important;
+}
+
+.player-container .timer-display {
+    font-size: 3rem;
+    color: #007bff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.player-container .btn-group .btn {
+    padding: 15px 25px;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+
+.player-container .btn-group .btn:hover {
+    transform: scale(1.05);
+}
+
+@media (max-width: 576px) {
+    .player-container .timer-display {
+        font-size: 2.5rem;
+    }
+
+    .player-container .btn-group .btn {
+        padding: 10px 15px;
+        font-size: 1rem;
+    }
+}
+

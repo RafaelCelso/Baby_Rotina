@@ -287,12 +287,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const playerContainer = document.createElement('div');
-    playerContainer.classList.add('player-container', 'mt-3');
+    playerContainer.classList.add('player-container', 'mt-5', 'mb-5', 'p-4', 'bg-light', 'rounded', 'shadow-lg', 'text-center');
     playerContainer.innerHTML = `
-        <button id="playBtn" class="btn btn-success"><i class="fas fa-play"></i></button>
-        <button id="pauseBtn" class="btn btn-warning" disabled><i class="fas fa-pause"></i></button>
-        <button id="stopBtn" class="btn btn-danger" disabled><i class="fas fa-stop"></i></button>
-        <span id="timer" class="ms-3">00:00:00</span>
+        <div class="timer-display mb-3">
+            <span id="timer" class="display-1 fw-bold text-primary">00:00:00</span>
+        </div>
+        <div class="btn-group" role="group" aria-label="Controles do cronômetro">
+            <button id="playBtn" class="btn btn-success btn-lg"><i class="fas fa-play"></i></button>
+            <button id="pauseBtn" class="btn btn-warning btn-lg" disabled><i class="fas fa-pause"></i></button>
+            <button id="stopBtn" class="btn btn-danger btn-lg" disabled><i class="fas fa-stop"></i></button>
+        </div>
     `;
     feedingForm.parentNode.insertBefore(playerContainer, feedingForm);
 
