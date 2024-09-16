@@ -230,25 +230,26 @@ document.addEventListener('DOMContentLoaded', () => {
         feedingForm.reset();
     }
 
+    function showDeleteConfirmModal(index) {
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        
+        confirmDeleteBtn.onclick = () => {
+            currentUser.babies.splice(index, 1);
+            updateUserData();
+            updateBabySelect();
+            updateBabyList();
+            deleteModal.hide();
+        };
+        
+        deleteModal.show();
+    }
+
     function deleteFeeding(event) {
         const index = event.target.dataset.index;
         const babyIndex = babySelect.value;
         
-        // Criar uma instância do modal
-        const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-        
-        // Mostrar o modal
-        deleteModal.show();
-        
-        // Configurar o botão de confirmação
-        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-        confirmDeleteBtn.onclick = () => {
-            const baby = currentUser.babies[babyIndex];
-            baby.feedings[selectedDate].splice(index, 1);
-            updateUserData();
-            displayFeedings(babyIndex);
-            deleteModal.hide();
-        };
+        showDeleteConfirmModal(index);
     }
 
     function updateUserData() {
@@ -425,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Adicionar botão de logout
     const logoutBtn = document.createElement('button');
     logoutBtn.textContent = 'Sair';
-    logoutBtn.classList.add('btn', 'btn-danger', 'mt-3');
+    logoutBtn.classList.add('btn', 'btn-danger', 'mt-3', 'mb-4');
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('currentUser');
         window.location.href = 'login.html';
@@ -507,6 +508,125 @@ document.addEventListener('DOMContentLoaded', () => {
         currentUser.babies.push(newBaby);
         updateUserData();
         updateBabySelect();
+    }
+
+    const babyListModal = new bootstrap.Modal(document.getElementById('babyListModal'));
+    const editBabyModal = new bootstrap.Modal(document.getElementById('editBabyModal'));
+
+    // Função para atualizar a lista de bebês no modal
+    function updateBabyList() {
+        const babyListContainer = document.getElementById('babyListContainer');
+        babyListContainer.innerHTML = '';
+
+        if (currentUser.babies && currentUser.babies.length > 0) {
+            currentUser.babies.forEach((baby, index) => {
+                const babyItem = document.createElement('div');
+                babyItem.classList.add('baby-item', 'mb-2', 'p-2', 'border', 'rounded');
+                babyItem.innerHTML = `
+                    <strong>${baby.name}</strong>
+                    <div class="float-end">
+                        <button class="btn btn-sm btn-primary edit-baby" data-index="${index}">Editar</button>
+                        <button class="btn btn-sm btn-danger delete-baby" data-index="${index}">Excluir</button>
+                        <button class="btn btn-sm btn-success select-baby" data-index="${index}">Selecionar</button>
+                    </div>
+                `;
+                babyListContainer.appendChild(babyItem);
+            });
+
+            // Adicionar event listeners para os botões
+            document.querySelectorAll('.edit-baby').forEach(btn => {
+                btn.addEventListener('click', editBaby);
+            });
+            document.querySelectorAll('.delete-baby').forEach(btn => {
+                btn.addEventListener('click', deleteBaby);
+            });
+            document.querySelectorAll('.select-baby').forEach(btn => {
+                btn.addEventListener('click', selectBaby);
+            });
+        } else {
+            babyListContainer.innerHTML = '<p>Nenhum bebê cadastrado.</p>';
+        }
+    }
+
+    // Função para editar um bebê
+    function editBaby(event) {
+        const index = event.target.dataset.index;
+        const baby = currentUser.babies[index];
+
+        document.getElementById('editBabyIndex').value = index;
+        document.getElementById('editBabyName').value = baby.name;
+        document.getElementById('editBirthDate').value = baby.birthDate;
+        document.getElementById('editMotherName').value = baby.mother;
+        document.getElementById('editFatherName').value = baby.father;
+
+        babyListModal.hide();
+        editBabyModal.show();
+    }
+
+    // Função para salvar as edições do bebê
+    document.getElementById('saveEditBabyBtn').addEventListener('click', () => {
+        const index = document.getElementById('editBabyIndex').value;
+        const editedBaby = {
+            name: document.getElementById('editBabyName').value,
+            birthDate: document.getElementById('editBirthDate').value,
+            mother: document.getElementById('editMotherName').value,
+            father: document.getElementById('editFatherName').value,
+            feedings: currentUser.babies[index].feedings
+        };
+
+        currentUser.babies[index] = editedBaby;
+        updateUserData();
+        updateBabySelect();
+        updateBabyList();
+        editBabyModal.hide();
+        babyListModal.show();
+    });
+
+    // Função para excluir um bebê
+    function deleteBaby(event) {
+        const index = event.target.dataset.index;
+        showDeleteConfirmModal(index);
+    }
+
+    // Função para selecionar um bebê
+    function selectBaby(event) {
+        const index = event.target.dataset.index;
+        babySelect.value = index;
+        const baby = currentUser.babies[index];
+        selectedBabyName.textContent = `Bebê selecionado: ${baby.name}`;
+        displayFeedings(index);
+
+        // Fechar o modal
+        const modalElement = document.getElementById('babyListModal');
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        modalInstance.hide();
+
+        // Adicionar um evento para quando o modal terminar de fechar
+        modalElement.addEventListener('hidden.bs.modal', function onModalHidden() {
+            // Remover o backdrop manualmente
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+
+            // Restaurar o scroll
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+
+            // Remover este event listener para evitar múltiplas chamadas
+            modalElement.removeEventListener('hidden.bs.modal', onModalHidden);
+        });
+    }
+
+    // Atualizar a lista de bebês quando o modal for aberto
+    document.getElementById('babyListModal').addEventListener('show.bs.modal', updateBabyList);
+
+    // Verificar se há um bebê selecionado ao carregar a página
+    if (currentUser.babies && currentUser.babies.length > 0) {
+        selectBaby({ target: { dataset: { index: '0' } } });
+    } else {
+        selectedBabyName.textContent = 'Nenhum bebê selecionado';
     }
 });
 

@@ -17,11 +17,17 @@
         <div id="userGreeting" class="mb-4"></div>
         <h1 class="mb-4">Registro de Mamadas</h1>
 
-        <!-- Formulário para cadastrar novo bebê -->
-        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#newBabyModal">Cadastrar Novo Bebê</button>
+        <!-- Botões para cadastrar novo bebê e listar bebês cadastrados -->
+        <div class="mb-4 mt-5">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newBabyModal">Cadastrar Novo Bebê</button>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#babyListModal">Bebês Cadastrados</button>
+        </div>
 
-        <!-- Seletor de bebê -->
-        <div class="mb-3">
+        <!-- Nome do bebê selecionado -->
+        <h2 id="selectedBabyName" class="mb-4"></h2>
+
+        <!-- Seletor de bebê (oculto visualmente) -->
+        <div class="mb-3 d-none">
             <label for="babySelect" class="form-label">Selecione o Bebê</label>
             <select class="form-select" id="babySelect">
                 <option value="">Escolha um bebê</option>
@@ -29,14 +35,14 @@
         </div>
 
         <!-- Calendário -->
-        <div class="mb-3">
+        <div class="mb-4">
             <label for="dateSelect" class="form-label">Selecione a Data</label>
             <input type="text" class="form-control" id="dateSelect">
         </div>
 
         <!-- Formulário de registro de mamada -->
         <form id="feedingForm">
-            <div class="mb-3">
+            <div class="mb-3 mt-4">
                 <label for="startTime" class="form-label">Hora Inicial</label>
                 <input type="time" class="form-control" id="startTime" required>
             </div>
@@ -90,6 +96,62 @@
         </div>
     </div>
 
+    <!-- Modal para listar bebês cadastrados -->
+    <div class="modal fade" id="babyListModal" tabindex="-1" aria-labelledby="babyListModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="babyListModalLabel">Bebês Cadastrados</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Selecione um bebê para fazer o registro:</p>
+                    <div id="babyListContainer"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar bebê -->
+    <div class="modal fade" id="editBabyModal" tabindex="-1" aria-labelledby="editBabyModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editBabyModalLabel">Editar Bebê</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editBabyForm">
+                        <input type="hidden" id="editBabyIndex">
+                        <div class="mb-3">
+                            <label for="editBabyName" class="form-label">Nome do Bebê</label>
+                            <input type="text" class="form-control" id="editBabyName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editBirthDate" class="form-label">Data de Nascimento</label>
+                            <input type="date" class="form-control" id="editBirthDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editMotherName" class="form-label">Nome da Mãe</label>
+                            <input type="text" class="form-control" id="editMotherName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editFatherName" class="form-label">Nome do Pai</label>
+                            <input type="text" class="form-control" id="editFatherName" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveEditBabyBtn">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal de confirmação de exclusão -->
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -99,7 +161,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    Tem certeza de que deseja excluir este registro de mamada?
+                    Tem certeza de que deseja excluir este bebê?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
