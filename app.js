@@ -668,6 +668,16 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         selectedBabyName.textContent = 'Nenhum bebê selecionado';
     }
+
+    function adjustBodyPadding() {
+        const navbar = document.querySelector('.navbar');
+        const navbarHeight = navbar.offsetHeight;
+        document.body.style.paddingTop = navbarHeight + 'px';
+    }
+
+    // Ajusta o padding inicialmente e sempre que a janela for redimensionada
+    adjustBodyPadding();
+    window.addEventListener('resize', adjustBodyPadding);
 });
 
 // Registro do Service Worker para PWA

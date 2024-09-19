@@ -79,3 +79,13 @@ body {
     }
 }
 
+.user-greeting {
+    padding-top: 70px; /* Ajuste este valor conforme necessário */
+}
+
+@media (max-width: 991.98px) {
+    .user-greeting {
+        padding-top: 56px; /* Altura padrão do navbar no Bootstrap para telas menores */
+    }
+}
+
