@@ -125,3 +125,43 @@ body {
     margin-bottom: 0.5rem;
 }
 
+/* Adicione estas regras no final do arquivo */
+
+.navbar-nav .nav-item {
+    padding: 0.5rem 0;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-nav .nav-item {
+        padding: 0.5rem 0;
+    }
+    
+    .navbar-nav .nav-item:first-child {
+        padding-top: 1.5rem;
+    }
+    
+    #navbarNav .navbar-nav .nav-item:first-child {
+        padding-top: 1.5rem !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .navbar-nav .mamadas-link {
+        padding-top: 1.5rem !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    #mamadasLink {
+        padding-top: 1.5rem !important;
+        margin-top: 1rem !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    #navbarNav {
+        padding-top: 1rem;
+    }
+}
+
+

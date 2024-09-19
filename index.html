@@ -35,7 +35,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index.html">
+                        <a class="nav-link active" id="mamadasLink" aria-current="page" href="index.html">
                             <i class="fas fa-baby-carriage"></i> Mamadas
                         </a>
                     </li>
@@ -272,6 +272,33 @@
             // Ajusta o padding inicialmente e sempre que a janela for redimensionada
             adjustBodyPadding();
             window.addEventListener('resize', adjustBodyPadding);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            function adjustNavItemsPadding() {
+                const mamadasLink = document.getElementById('mamadasLink');
+                const logoutLinkMobile = document.getElementById('logoutLinkMobile');
+                
+                if (window.innerWidth <= 991.98) {
+                    mamadasLink.style.paddingTop = '0.5rem';
+                    mamadasLink.style.marginTop = '1rem';
+                    
+                    logoutLinkMobile.style.paddingTop = '1.5rem';
+                    logoutLinkMobile.style.marginTop = '1rem';
+                } else {
+                    mamadasLink.style.paddingTop = '';
+                    mamadasLink.style.marginTop = '';
+                    
+                    logoutLinkMobile.style.paddingBottom = '0.5rem';
+                    logoutLinkMobile.style.marginBottom = '1rem';
+                }
+            }
+
+            // Ajusta o padding inicialmente
+            adjustNavItemsPadding();
+
+            // Ajusta o padding sempre que a janela for redimensionada
+            window.addEventListener('resize', adjustNavItemsPadding);
         });
     </script>
 </body>
