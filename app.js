@@ -161,7 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (timeDiff > 0) {
             const hours = Math.floor(timeDiff / (1000 * 60 * 60));
             const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-            countdownTimer.textContent = `Próxima mamada em ${hours}h ${minutes}m`;
+            const formattedNextFeedingTime = nextFeedingTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            countdownTimer.innerHTML = `Próxima mamada em ${hours}h ${minutes}m<br>Hora prevista: ${formattedNextFeedingTime}`;
             countdownTimer.classList.remove('alert-danger');
             countdownTimer.classList.add('alert-warning');
         } else {
