@@ -34,6 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('users', JSON.stringify(users));
         localStorage.setItem('currentUser', JSON.stringify(newUser));
         
-        window.location.href = 'index.html';
+        window.location.href = 'inicio.html'; // Alterado de 'index.html' para 'inicio.html'
     });
 });
