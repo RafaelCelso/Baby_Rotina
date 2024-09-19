@@ -161,7 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (timeDiff > 0) {
             const hours = Math.floor(timeDiff / (1000 * 60 * 60));
             const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-            countdownTimer.textContent = `Próxima mamada em ${hours}h ${minutes}m`;
+            const formattedNextFeedingTime = nextFeedingTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            countdownTimer.innerHTML = `Próxima mamada em ${hours}h ${minutes}m<br>Hora prevista: ${formattedNextFeedingTime}`;
             countdownTimer.classList.remove('alert-danger');
             countdownTimer.classList.add('alert-warning');
         } else {
@@ -189,8 +190,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        const lastFeedingTime = new Date(selectedDate + 'T' + lastFeeding.startTime);
-        const nextFeedingTime = new Date(lastFeedingTime.getTime() + 3 * 60 * 60 * 1000);
+        const lastFeedingEndTime = new Date(selectedDate + 'T' + lastFeeding.endTime);
+        const nextFeedingTime = new Date(lastFeedingEndTime.getTime() + 3 * 60 * 60 * 1000);
         
         function updateTimer() {
             updateCountdown(nextFeedingTime);
@@ -456,8 +457,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Ajuste para telas menores
     if (window.innerWidth <= 768) {
+        logoutLink.textContent = 'Baby Rotina';
+        logoutLinkMobile.textContent = 'Baby Rotina';
         logoutLink.style.paddingBottom = '8px';
         logoutLink.style.marginBottom = '8px';
+    } else {
+        logoutLink.textContent = 'Baby Rotina';
+        logoutLinkMobile.textContent = 'Baby Rotina';
     }
 
     // Adicionar evento de escuta para o botão "Cancelar"
