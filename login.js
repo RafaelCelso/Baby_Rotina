@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (user) {
             localStorage.setItem('currentUser', JSON.stringify(user));
-            window.location.href = 'index.html';
+            window.location.href = 'inicio.html'; // Alterado de 'index.html' para 'inicio.html'
         } else {
             alert('E-mail ou senha incorretos');
         }

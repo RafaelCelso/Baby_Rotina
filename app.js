@@ -414,20 +414,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setInterval(checkAndClearOldFeedings, 60000); // Verificar a cada minuto
 
-    // Adicionar botão de logout
-    const logoutBtn = document.createElement('button');
-    logoutBtn.textContent = 'Sair';
-    logoutBtn.classList.add('btn', 'btn-danger', 'mt-3', 'mb-4', 'btn-logout');
-    logoutBtn.addEventListener('click', () => {
+    // Adicionar botão de logout ao menu
+    const navbarContainer = document.querySelector('.navbar > .container');
+    const logoutLink = document.getElementById('logoutLink');
+    const logoutLinkMobile = document.getElementById('logoutLinkMobile');
+    const navbarCollapse = document.querySelector('.navbar-collapse');
+
+    function moveLogoutButton() {
+        if (window.innerWidth < 992) {
+            navbarCollapse.appendChild(logoutLinkMobile);
+        } else {
+            navbarContainer.appendChild(logoutLink);
+        }
+    }
+
+    // Chamar a função inicialmente e adicionar um listener para redimensionamento
+    moveLogoutButton();
+    window.addEventListener('resize', moveLogoutButton);
+
+    function logout(e) {
+        e.preventDefault();
         localStorage.removeItem('currentUser');
         window.location.href = 'login.html';
-    });
-    document.querySelector('.container').appendChild(logoutBtn);
+    }
+
+    // Adicionar funcionalidade de logout para ambos os links
+    logoutLink.addEventListener('click', logout);
+    logoutLinkMobile.addEventListener('click', logout);
 
     // Ajuste para telas menores
     if (window.innerWidth <= 768) {
-        logoutBtn.style.paddingBottom = '40px';
-        logoutBtn.style.marginBottom = '40px';
+        logoutLink.style.paddingBottom = '8px';
+        logoutLink.style.marginBottom = '8px';
     }
 
     // Adicionar evento de escuta para o botão "Cancelar"
