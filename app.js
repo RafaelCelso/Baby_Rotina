@@ -154,6 +154,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function updateCountdown(nextFeedingTime) {
+        const now = new Date();
+        const timeDiff = nextFeedingTime - now;
+
+        if (timeDiff > 0) {
+            const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            countdownTimer.textContent = `Próxima mamada em ${hours}h ${minutes}m`;
+            countdownTimer.classList.remove('alert-danger');
+            countdownTimer.classList.add('alert-warning');
+        } else {
+            const elapsedTime = Math.abs(timeDiff);
+            const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+            const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
+            const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            countdownTimer.innerHTML = `
+                Hora prevista da mamada: ${nextFeedingTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                <br>
+                Tempo ultrapassado: ${formattedTime}
+            `;
+            countdownTimer.classList.remove('alert-warning');
+            countdownTimer.classList.add('alert-danger');
+        }
+    }
+
     function startCountdown(lastFeeding) {
         clearInterval(countdownInterval);
         
@@ -162,30 +189,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        function updateCountdown() {
-            const now = new Date();
-            const lastFeedingTime = new Date(now.toDateString() + ' ' + lastFeeding.startTime);
-            const nextFeedingTime = new Date(lastFeedingTime.getTime() + 3 * 60 * 60 * 1000);
-            const timeDiff = nextFeedingTime - now;
-
-            if (timeDiff <= 0) {
-                clearInterval(countdownInterval);
-                countdownTimer.textContent = 'Hora da próxima mamada!';
-                return;
-            }
-
-            const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
-            countdownTimer.innerHTML = `
-                Próxima mamada prevista para: <strong>${formatTime(nextFeedingTime)}</strong><br>
-                Tempo restante: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}
-            `;
+        const lastFeedingTime = new Date(selectedDate + 'T' + lastFeeding.startTime);
+        const nextFeedingTime = new Date(lastFeedingTime.getTime() + 3 * 60 * 60 * 1000);
+        
+        function updateTimer() {
+            updateCountdown(nextFeedingTime);
         }
 
-        updateCountdown();
-        countdownInterval = setInterval(updateCountdown, 1000);
+        updateTimer(); // Atualiza imediatamente
+        countdownInterval = setInterval(updateTimer, 1000); // Atualiza a cada segundo
     }
 
     function editFeeding(event) {
