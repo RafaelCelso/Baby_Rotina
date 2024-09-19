@@ -16,6 +16,13 @@
         .card:hover {
             transform: scale(1.05);
         }
+        .card-link:hover {
+            text-decoration: none;
+        }
+        .card-link:hover .card {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -23,34 +30,37 @@
         <h1 class="text-center mb-5 mt-5 text-primary">Baby Rotina</h1>
         <div class="row justify-content-center">
             <div class="col-md-4 col-sm-6 mb-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <i class="fas fa-baby-carriage fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title">Mamadas</h5>
-                        <p class="card-text">Registre e acompanhe as mamadas do seu bebê.</p>
-                        <a href="index.html" class="btn btn-primary">Acessar</a>
+                <a href="index.html" class="card-link text-decoration-none">
+                    <div class="card text-center h-100">
+                        <div class="card-body d-flex flex-column">
+                            <i class="fas fa-baby-carriage fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Mamadas</h5>
+                            <p class="card-text">Registre e acompanhe as mamadas do seu bebê.</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-md-4 col-sm-6 mb-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <i class="fas fa-baby fa-3x text-success mb-3"></i>
-                        <h5 class="card-title">Troca de Fralda</h5>
-                        <p class="card-text">Acompanhe as trocas de fralda do seu bebê.</p>
-                        <a href="#" class="btn btn-success">Acessar</a>
+                <a href="#" class="card-link text-decoration-none">
+                    <div class="card text-center h-100">
+                        <div class="card-body d-flex flex-column">
+                            <i class="fas fa-baby fa-3x text-success mb-3"></i>
+                            <h5 class="card-title">Troca de Fralda</h5>
+                            <p class="card-text">Acompanhe as trocas de fralda do seu bebê.</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-md-4 col-sm-6 mb-3">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <i class="fas fa-moon fa-3x text-warning mb-3"></i>
-                        <h5 class="card-title">Soneca</h5>
-                        <p class="card-text">Registre e monitore os horários de sono do seu bebê.</p>
-                        <a href="#" class="btn btn-warning">Acessar</a>
+            <div class="col-md-4 col-sm-6 mb-4">
+                <a href="#" class="card-link text-decoration-none">
+                    <div class="card text-center h-100">
+                        <div class="card-body d-flex flex-column">
+                            <i class="fas fa-moon fa-3x text-warning mb-3"></i>
+                            <h5 class="card-title">Soneca</h5>
+                            <p class="card-text">Registre e monitore os horários de sono do seu bebê.</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
