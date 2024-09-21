@@ -4,6 +4,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
+    const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
 
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -28,11 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = 'inicio.html';
             } else {
                 console.error("Documento do usuário não encontrado");
-                alert('Erro ao recuperar informações do usuário');
+                errorModal.show();
             }
         } catch (error) {
             console.error("Erro ao fazer login:", error);
-            alert('E-mail ou senha incorretos');
+            errorModal.show();
         }
     });
 });
