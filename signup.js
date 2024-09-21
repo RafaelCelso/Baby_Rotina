@@ -16,10 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const userType = document.getElementById('userType').value;
         
         try {
+            console.log("Tentando criar usuário...");
             // Criar usuário no Firebase Authentication
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
+            console.log("Usuário criado com sucesso:", user.uid);
 
+            console.log("Tentando criar documento no Firestore...");
             // Criar documento do usuário no Firestore
             await setDoc(doc(db, "users", user.uid), {
                 name,
@@ -32,11 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     feedings: {}
                 }]
             });
+            console.log("Documento criado com sucesso no Firestore");
 
             // Redirecionar para a página inicial
             window.location.href = 'inicio.html';
         } catch (error) {
-            console.error("Erro ao criar conta:", error);
+            console.error("Erro detalhado ao criar conta:", error);
             alert("Erro ao criar conta: " + error.message);
         }
     });
