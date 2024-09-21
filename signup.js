@@ -1,7 +1,11 @@
+import { auth, db } from './firebase-config.js';
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+import { setDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     const signupForm = document.getElementById('signupForm');
 
-    signupForm.addEventListener('submit', (e) => {
+    signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
@@ -11,29 +15,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const motherName = document.getElementById('motherName').value;
         const userType = document.getElementById('userType').value;
         
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        
-        if (users.some(u => u.email === email)) {
-            alert('Este e-mail já está cadastrado');
-            return;
+        try {
+            // Criar usuário no Firebase Authentication
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Criar documento do usuário no Firestore
+            await setDoc(doc(db, "users", user.uid), {
+                name,
+                email,
+                userType,
+                babies: [{
+                    name: babyName,
+                    birthDate,
+                    motherName,
+                    feedings: {}
+                }]
+            });
+
+            // Redirecionar para a página inicial
+            window.location.href = 'inicio.html';
+        } catch (error) {
+            console.error("Erro ao criar conta:", error);
+            alert("Erro ao criar conta: " + error.message);
         }
-        
-        const newUser = { 
-            name, 
-            email, 
-            password, 
-            userType,
-            babies: [{
-                name: babyName,
-                birthDate,
-                motherName,
-                feedings: {}
-            }]
-        };
-        users.push(newUser);
-        localStorage.setItem('users', JSON.stringify(users));
-        localStorage.setItem('currentUser', JSON.stringify(newUser));
-        
-        window.location.href = 'inicio.html'; // Alterado de 'index.html' para 'inicio.html'
     });
 });
