@@ -303,11 +303,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             playBtn.addEventListener('click', () => {
-                startTime = Date.now();
-                if (isPaused) {
-                    startTime -= elapsedTime;
-                    isPaused = false;
+                if (!startTime) {
+                    startTime = Date.now();
+                } else if (isPaused) {
+                    startTime = Date.now() - elapsedTime;
                 }
+                isPaused = false;
                 timerInterval = setInterval(updateTimerDisplay, 1000);
                 playBtn.disabled = true;
                 pauseBtn.disabled = false;
@@ -317,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             pauseBtn.addEventListener('click', () => {
                 clearInterval(timerInterval);
-                elapsedTime += Date.now() - startTime;
+                elapsedTime = Date.now() - startTime;
                 isPaused = true;
                 playBtn.disabled = false;
                 pauseBtn.disabled = true;
@@ -328,6 +329,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const endTime = new Date().toTimeString().slice(0, 5);
                 document.getElementById('endTime').value = endTime;
                 elapsedTime = 0;
+                startTime = null;
+                isPaused = false;
                 timerDisplay.textContent = '00:00:00';
                 playBtn.disabled = false;
                 pauseBtn.disabled = true;
