@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            padding-top: 70px; /* Ajuste este valor conforme a altura real da sua navbar */
+            padding-top: 5px; /* Ajustado de 70px para 65px */
+            color: white; /* Alterando a cor do texto para branco */
         }
         @media (min-width: 992px) {
             .navbar-nav {
@@ -21,15 +22,222 @@
                 transform: translateX(-50%);
             }
         }
+        .custom-navbar {
+            background-color: transparent; /* Removendo a cor de fundo */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding-top: 5px; /* Reduzido de 10px para 5px */
+            padding-bottom: 5px; /* Reduzido de 10px para 5px */
+            margin-bottom: 5px; /* Reduzido de 10px para 5px */
+        }
+        .custom-navbar .navbar-brand,
+        .custom-navbar .nav-link {
+            color: white !important;
+        }
+        .custom-navbar .nav-link:hover {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+        .custom-navbar .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+        
+        .navbar-brand img {
+            width: 200px;
+            height: auto;
+        }
+
+        @media (max-width: 767px) {
+            .navbar-brand img {
+                width: 160px; /* Um pouco menor em telas muito pequenas */
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            .navbar-brand img {
+                width: 180px; /* Tamanho intermediário para telas médias */
+            }
+        }
+
+        /* Estilo para o fundo em dispositivos móveis */
+        @media (max-width: 767px) {
+            body {
+                background-image: url('img/bg-mamadas-mobile.png');
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-attachment: fixed;
+                background-size: cover;
+            }
+        }
+
+        /* Novo estilo para o fundo em telas grandes */
+        @media (min-width: 768px) {
+            body {
+                background-image: url('img/bg-mamadas.png');
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-attachment: fixed;
+                background-size: cover;
+            }
+        }
+
+        /* Novo estilo para melhorar a legibilidade do conteúdo */
+        .container {
+            background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            margin-bottom: 10px; /* Aumentando a margem inferior */
+        }
+
+        /* Ajustando a cor dos inputs e labels */
+        .form-label, .form-control {
+            color: white;
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* Ajustando a cor do texto nos modais */
+        .modal-content {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            color: black;
+        }
+
+        /* Ajuste para o cabeçalho e rodapé dos modais */
+        .modal-header, .modal-footer {
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Ajuste para os inputs dentro dos modais */
+        .modal-content .form-control {
+            background-color: rgba(255, 255, 255, 0.5);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: black;
+        }
+
+        .modal-content .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.7);
+            color: black;
+        }
+
+        /* Ajuste para os labels dentro dos modais */
+        .modal-content .form-label {
+            color: black;
+        }
+
+        /* Ajuste para os botões dentro dos modais */
+        .modal-content .btn {
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        /* Ajuste para telas menores */
+        @media (max-width: 767px) {
+            .container {
+                width: 90%; /* Reduz a largura para 90% em telas menores */
+                max-width: none; /* Remove o max-width padrão do Bootstrap */
+                margin-bottom: 10px; /* Ajustando a margem inferior para telas menores */
+            }
+            .custom-navbar {
+                margin-bottom: 2px; /* Reduzido de 5px para 2px em telas menores */
+            }
+        }
+
+        /* Estilo para o seletor de bebê */
+        #selectedBabyName {
+            font-size: 1.5rem; /* Reduzindo o tamanho da fonte */
+            padding: 0.5rem 1rem; /* Reduzindo o padding */
+        }
+
+        /* Ajuste para telas menores */
+        @media (max-width: 767px) {
+            #selectedBabyName {
+                font-size: 1.2rem; /* Fonte ainda menor em telas pequenas */
+                padding: 0.3rem 0.8rem; /* Padding menor em telas pequenas */
+            }
+        }
+
+        /* Estilo para os botões de cadastro e lista de bebês */
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-lg:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        /* Ajuste para telas menores */
+        @media (max-width: 767px) {
+            .btn-lg {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+            }
+        }
+
+        /* Estilo para o botão Registrar Mamada */
+        .register-feeding-btn {
+            background-color: #ff6b6b;
+            border-color: #ff6b6b;
+            color: white;
+            font-size: 1.2rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .register-feeding-btn:hover, .register-feeding-btn:focus {
+            background-color: #ff5252;
+            border-color: #ff5252;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.4) !important;
+        }
+
+        .register-feeding-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 10px rgba(255, 107, 107, 0.4) !important;
+        }
+
+        /* Ajuste para telas menores */
+        @media (max-width: 767px) {
+            .register-feeding-btn {
+                font-size: 1rem;
+                padding: 0.5rem 1rem;
+            }
+        }
     </style>
     <script type="module" src="firebase-config.js"></script>
 </head>
 
 <body>
     <!-- Novo menu responsivo -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar">
         <div class="container">
-            <a class="navbar-brand" href="inicio.html">Baby Rotina</a>
+            <a class="navbar-brand" href="inicio.html"><img src="img/logo-baby-rotina.png" alt="Logo"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -73,14 +281,18 @@
         <h1 class="mb-4">Registro de Mamadas</h1>
 
         <!-- Botões para cadastrar novo bebê e listar bebês cadastrados -->
-        <div class="mb-4 mt-5">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newBabyModal">Cadastrar Novo Bebê</button>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#babyListModal">Bebês Cadastrados</button>
+        <div class="mb-4 mt-5 d-flex justify-content-center gap-3">
+            <button class="btn btn-primary btn-lg shadow-lg" data-bs-toggle="modal" data-bs-target="#newBabyModal">
+                <i class="fas fa-plus-circle me-2"></i>Cadastrar Novo Bebê
+            </button>
+            <button class="btn btn-success btn-lg shadow-lg" data-bs-toggle="modal" data-bs-target="#babyListModal">
+                <i class="fas fa-list me-2"></i>Bebês Cadastrados
+            </button>
         </div>
 
         <!-- Nome do bebê selecionado -->
         <div class="dropdown mb-4">
-            <h2 id="selectedBabyName" class="dropdown-toggle text-center p-3 bg-primary text-white rounded shadow-lg display-4" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer; position: relative; padding-right: 1.5em;">
+            <h2 id="selectedBabyName" class="dropdown-toggle text-center p-3 bg-primary text-white rounded shadow-lg" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer; position: relative; padding-right: 1.5em;">
                 Selecione um bebê
                 <span style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%);">&#9662;</span>
             </h2>
@@ -122,7 +334,9 @@
                 <label for="formulaAmount" class="form-label">Quantidade de Fórmula (ml)</label>
                 <input type="number" class="form-control" id="formulaAmount" min="0" step="1">
             </div>
-            <button type="submit" class="btn btn-primary">Registrar Mamada</button>
+            <button type="submit" class="btn btn-primary btn-lg w-100 mt-4 shadow-lg register-feeding-btn">
+                <i class="fas fa-baby-carriage me-2"></i>Registrar Mamada
+            </button>
         </form>
         <div id="feedingList" class="mt-4"></div>
         <div id="totalFormula" class="alert alert-success mt-3"></div>
@@ -627,7 +841,7 @@
             function adjustBodyPadding() {
                 const navbar = document.querySelector('.navbar');
                 const navbarHeight = navbar.offsetHeight;
-                document.body.style.paddingTop = navbarHeight + 'px';
+                document.body.style.paddingTop = (navbarHeight + 5) + 'px'; // Adicionando 5px de espaço extra
             }
 
             // Ajusta o padding inicialmente e sempre que a janela for redimensionada
