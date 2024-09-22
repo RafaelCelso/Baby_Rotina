@@ -50,14 +50,14 @@
                             <i class="fas fa-moon"></i> Soneca
                         </a>
                     </li>
-                    <li class="nav-item d-lg-none">
-                        <a id="logoutLinkMobile" href="#" class="nav-link text-danger d-lg-none">
-                            <i class="fas fa-sign-out-alt"></i> Sair
-                        </a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="perfil.html">
                             <i class="fas fa-user"></i> Perfil
+                        </a>
+                    </li>
+                    <li class="nav-item d-lg-none">
+                        <a id="logoutLinkMobile" href="#" class="nav-link text-danger d-lg-none">
+                            <i class="fas fa-sign-out-alt"></i> Sair
                         </a>
                     </li>
                 </ul>
@@ -79,7 +79,15 @@
         </div>
 
         <!-- Nome do bebê selecionado -->
-        <h2 id="selectedBabyName" class="mb-4 text-center p-3 bg-primary text-white rounded shadow-lg display-4"></h2>
+        <div class="dropdown mb-4">
+            <h2 id="selectedBabyName" class="dropdown-toggle text-center p-3 bg-primary text-white rounded shadow-lg display-4" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer; position: relative; padding-right: 1.5em;">
+                Selecione um bebê
+                <span style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%);">&#9662;</span>
+            </h2>
+            <ul class="dropdown-menu w-100" id="babyDropdown" aria-labelledby="selectedBabyName">
+                <!-- Os itens do dropdown serão inseridos aqui dinamicamente -->
+            </ul>
+        </div>
 
         <!-- Seletor de bebê (oculto visualmente) -->
         <div class="mb-3 d-none">
@@ -142,10 +150,6 @@
                             <label for="motherName" class="form-label">Nome da Mãe</label>
                             <input type="text" class="form-control" id="motherName" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="fatherName" class="form-label">Nome do Pai</label>
-                            <input type="text" class="form-control" id="fatherName" required>
-                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -158,15 +162,16 @@
 
     <!-- Modal para listar bebês cadastrados -->
     <div class="modal fade" id="babyListModal" tabindex="-1" aria-labelledby="babyListModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="babyListModalLabel">Bebês Cadastrados</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
-                <div class="modal-body text-center">
-                    <p>Selecione um bebê para fazer o registro:</p>
-                    <div id="babyListContainer"></div>
+                <div class="modal-body">
+                    <ul id="babyList" class="list-group">
+                        <!-- A lista de bebês será inserida aqui dinamicamente -->
+                    </ul>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -198,10 +203,6 @@
                             <label for="editMotherName" class="form-label">Nome da Mãe</label>
                             <input type="text" class="form-control" id="editMotherName" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="editFatherName" class="form-label">Nome do Pai</label>
-                            <input type="text" class="form-control" id="editFatherName" required>
-                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -212,20 +213,79 @@
         </div>
     </div>
 
-    <!-- Modal de confirmação de exclusão -->
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <!-- Modal de confirmação de edição de bebê -->
+    <div class="modal fade" id="editBabyConfirmationModal" tabindex="-1" aria-labelledby="editBabyConfirmationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirmar exclusão</h5>
+                    <h5 class="modal-title" id="editBabyConfirmationModalLabel">Bebê Atualizado</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
-                <div class="modal-body">
-                    Tem certeza de que deseja excluir este bebê?
+                <div class="modal-body text-center">
+                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                    <p>As informações do bebê foram atualizadas com sucesso!</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Excluir</button>
+                    <button type="button" class="btn btn-primary" id="editConfirmationOkBtn">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação de cadastro de bebê -->
+    <div class="modal fade" id="babyConfirmationModal" tabindex="-1" aria-labelledby="babyConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="babyConfirmationModalLabel">Bebê Cadastrado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-baby fa-3x text-success mb-3"></i>
+                    <p>O bebê foi cadastrado com sucesso!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação de exclusão de bebê -->
+    <div class="modal fade" id="deleteBabyConfirmationModal" tabindex="-1" aria-labelledby="deleteBabyConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteBabyConfirmationModalLabel">Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    <p>Tem certeza que deseja excluir o bebê <strong id="babyNameToDelete"></strong>?</p>
+                    <p class="text-danger">Esta ação não pode ser desfeita.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelDeleteBtn" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBabyBtn">Excluir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação de exclusão bem-sucedida -->
+    <div class="modal fade" id="deleteBabySuccessModal" tabindex="-1" aria-labelledby="deleteBabySuccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteBabySuccessModalLabel">Bebê Excluído</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                    <p>O bebê foi excluído com sucesso.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
@@ -234,6 +294,321 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+        import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    try {
+                        const userDoc = await getDoc(doc(db, "users", user.uid));
+                        const currentUser = userDoc.data();
+                        
+                        const userGreeting = document.getElementById('userGreeting');
+                        userGreeting.innerHTML = `<h3>Olá, ${currentUser.name} 👋</h3>`;
+
+                        const feedingForm = document.getElementById('feedingForm');
+                        const feedingList = document.getElementById('feedingList');
+                        const babySelect = document.getElementById('babySelect');
+                        const selectedBabyName = document.getElementById('selectedBabyName');
+                        const babyDropdown = document.getElementById('babyDropdown');
+
+                        function updateBabyDropdown() {
+                            babyDropdown.innerHTML = '';
+                            if (currentUser.babies && currentUser.babies.length > 0) {
+                                currentUser.babies.forEach((baby, index) => {
+                                    const li = document.createElement('li');
+                                    const a = document.createElement('a');
+                                    a.className = 'dropdown-item';
+                                    a.href = '#';
+                                    a.textContent = baby.name;
+                                    a.dataset.index = index;
+                                    li.appendChild(a);
+                                    babyDropdown.appendChild(li);
+                                });
+                                
+                                // Selecionar o bebê salvo no perfil do usuário
+                                const selectedIndex = currentUser.selectedBabyIndex || 0;
+                                selectedBabyName.textContent = currentUser.babies[selectedIndex].name;
+                            } else {
+                                selectedBabyName.textContent = 'Nenhum bebê cadastrado';
+                            }
+                        }
+
+                        updateBabyDropdown();
+
+                        babyDropdown.addEventListener('click', async (e) => {
+                            if (e.target.classList.contains('dropdown-item')) {
+                                e.preventDefault();
+                                const selectedIndex = parseInt(e.target.dataset.index);
+                                if (!isNaN(selectedIndex)) {
+                                    selectedBabyName.textContent = currentUser.babies[selectedIndex].name;
+                                    
+                                    // Atualizar o índice do bebê selecionado no Firestore
+                                    await updateDoc(doc(db, "users", user.uid), {
+                                        selectedBabyIndex: selectedIndex
+                                    });
+
+                                    // Atualizar a exibição das mamadas (se necessário)
+                                    displayFeedings(selectedIndex);
+                                }
+                            }
+                        });
+
+                        function updateBabySelect() {
+                            babySelect.innerHTML = '<option value="">Escolha um bebê</option>';
+                            if (currentUser.babies && currentUser.babies.length > 0) {
+                                currentUser.babies.forEach((baby, index) => {
+                                    const option = document.createElement('option');
+                                    option.value = index;
+                                    option.textContent = baby.name;
+                                    babySelect.appendChild(option);
+                                });
+                                
+                                // Selecionar o bebê salvo no perfil do usuário
+                                const selectedIndex = currentUser.selectedBabyIndex || 0;
+                                babySelect.value = selectedIndex.toString();
+                                displayFeedings(selectedIndex);
+                                selectedBabyName.textContent = currentUser.babies[selectedIndex].name;
+                            } else {
+                                feedingList.innerHTML = '<p>Nenhum bebê cadastrado. Por favor, adicione um bebê.</p>';
+                                selectedBabyName.textContent = 'Nenhum bebê selecionado';
+                            }
+                        }
+
+                        updateBabySelect();
+
+                        // Função para exibir as mamadas do bebê selecionado
+                        function displayFeedings(babyIndex) {
+                            // Implemente a lógica para exibir as mamadas aqui
+                            console.log(`Exibindo mamadas para o bebê de índice ${babyIndex}`);
+                        }
+
+                        babySelect.addEventListener('change', async (e) => {
+                            const selectedIndex = parseInt(e.target.value);
+                            if (!isNaN(selectedIndex)) {
+                                displayFeedings(selectedIndex);
+                                selectedBabyName.textContent = currentUser.babies[selectedIndex].name;
+                                
+                                // Atualizar o índice do bebê selecionado no Firestore
+                                await updateDoc(doc(db, "users", user.uid), {
+                                    selectedBabyIndex: selectedIndex
+                                });
+                            } else {
+                                feedingList.innerHTML = '';
+                                selectedBabyName.textContent = 'Nenhum bebê selecionado';
+                            }
+                        });
+
+                        const newBabyForm = document.getElementById('newBabyForm');
+                        const saveBabyBtn = document.getElementById('saveBabyBtn');
+                        const newBabyModal = new bootstrap.Modal(document.getElementById('newBabyModal'));
+                        const babyConfirmationModal = new bootstrap.Modal(document.getElementById('babyConfirmationModal'));
+
+                        saveBabyBtn.addEventListener('click', async () => {
+                            const babyName = document.getElementById('babyName').value;
+                            const birthDate = document.getElementById('birthDate').value;
+                            const motherName = document.getElementById('motherName').value;
+
+                            if (babyName && birthDate && motherName) {
+                                const newBaby = {
+                                    name: babyName,
+                                    birthDate: birthDate,
+                                    motherName: motherName,
+                                    feedings: {}
+                                };
+
+                                try {
+                                    // Adicionar o novo bebê ao array de bebês do usuário no Firestore
+                                    await updateDoc(doc(db, "users", user.uid), {
+                                        babies: arrayUnion(newBaby)
+                                    });
+
+                                    // Atualizar a lista de bebês na interface
+                                    currentUser.babies.push(newBaby);
+                                    updateBabySelect();
+                                    updateBabyList(); // Atualizar a lista no modal
+                                    updateBabyDropdown(); // Atualizar o dropdown
+
+                                    // Fechar o modal de cadastro e limpar o formulário
+                                    newBabyModal.hide();
+                                    newBabyForm.reset();
+
+                                    // Exibir o modal de confirmação
+                                    babyConfirmationModal.show();
+                                } catch (error) {
+                                    console.error("Erro ao adicionar bebê:", error);
+                                    alert('Erro ao adicionar bebê. Por favor, tente novamente.');
+                                }
+                            } else {
+                                alert('Por favor, preencha todos os campos.');
+                            }
+                        });
+
+                        const babyListModal = new bootstrap.Modal(document.getElementById('babyListModal'));
+                        const editBabyModal = new bootstrap.Modal(document.getElementById('editBabyModal'));
+                        const editBabyConfirmationModal = new bootstrap.Modal(document.getElementById('editBabyConfirmationModal'));
+                        const deleteBabyConfirmationModal = new bootstrap.Modal(document.getElementById('deleteBabyConfirmationModal'));
+                        const deleteBabySuccessModal = new bootstrap.Modal(document.getElementById('deleteBabySuccessModal'));
+                        const babyListElement = document.getElementById('babyList');
+                        const editBabyForm = document.getElementById('editBabyForm');
+                        const saveEditBabyBtn = document.getElementById('saveEditBabyBtn');
+                        const editConfirmationOkBtn = document.getElementById('editConfirmationOkBtn');
+                        const confirmDeleteBabyBtn = document.getElementById('confirmDeleteBabyBtn');
+                        const babyNameToDeleteElement = document.getElementById('babyNameToDelete');
+
+                        let babyToDeleteIndex = -1;
+
+                        // Função para atualizar a lista de bebês no modal
+                        function updateBabyList() {
+                            babyListElement.innerHTML = '';
+                            if (currentUser.babies && currentUser.babies.length > 0) {
+                                currentUser.babies.forEach((baby, index) => {
+                                    const li = document.createElement('li');
+                                    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                                    li.innerHTML = `
+                                        <span>${baby.name}</span>
+                                        <div>
+                                            <button class="btn btn-sm btn-primary edit-baby" data-index="${index}">Editar</button>
+                                            <button class="btn btn-sm btn-danger delete-baby" data-index="${index}">Excluir</button>
+                                        </div>
+                                    `;
+                                    babyListElement.appendChild(li);
+                                });
+                            } else {
+                                babyListElement.innerHTML = '<li class="list-group-item">Nenhum bebê cadastrado.</li>';
+                            }
+                        }
+
+                        // Atualizar a lista de bebês quando o modal for aberto
+                        document.getElementById('babyListModal').addEventListener('show.bs.modal', updateBabyList);
+
+                        babyListElement.addEventListener('click', (e) => {
+                            if (e.target.classList.contains('edit-baby')) {
+                                const index = e.target.dataset.index;
+                                const baby = currentUser.babies[index];
+                                document.getElementById('editBabyIndex').value = index;
+                                document.getElementById('editBabyName').value = baby.name;
+                                document.getElementById('editBirthDate').value = baby.birthDate;
+                                document.getElementById('editMotherName').value = baby.motherName;
+                                babyListModal.hide();
+                                editBabyModal.show();
+                            } else if (e.target.classList.contains('delete-baby')) {
+                                babyToDeleteIndex = e.target.dataset.index;
+                                const babyName = currentUser.babies[babyToDeleteIndex].name;
+                                babyNameToDeleteElement.textContent = babyName;
+                                babyListModal.hide();
+                                deleteBabyConfirmationModal.show();
+                            }
+                        });
+
+                        confirmDeleteBabyBtn.addEventListener('click', async () => {
+                            if (babyToDeleteIndex !== -1) {
+                                currentUser.babies.splice(babyToDeleteIndex, 1);
+                                try {
+                                    await updateDoc(doc(db, "users", user.uid), {
+                                        babies: currentUser.babies
+                                    });
+                                    updateBabyList();
+                                    updateBabySelect();
+                                    updateBabyDropdown();
+                                    deleteBabyConfirmationModal.hide();
+                                    deleteBabySuccessModal.show();
+                                } catch (error) {
+                                    console.error("Erro ao excluir bebê:", error);
+                                    alert('Erro ao excluir bebê. Por favor, tente novamente.');
+                                }
+                            }
+                        });
+
+                        // Evento para quando o modal de confirmação de exclusão for fechado
+                        document.getElementById('deleteBabyConfirmationModal').addEventListener('hidden.bs.modal', (e) => {
+                            if (!document.getElementById('deleteBabySuccessModal').classList.contains('show')) {
+                                babyListModal.show();
+                            }
+                        });
+
+                        // Evento para quando o modal de sucesso de exclusão for fechado
+                        document.getElementById('deleteBabySuccessModal').addEventListener('hidden.bs.modal', () => {
+                            babyListModal.show();
+                        });
+
+                        // Adicionar botão de cancelar no modal de confirmação de exclusão
+                        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+                        if (cancelDeleteBtn) {
+                            cancelDeleteBtn.addEventListener('click', () => {
+                                deleteBabyConfirmationModal.hide();
+                            });
+                        }
+
+                        // Salvar edições do bebê
+                        saveEditBabyBtn.addEventListener('click', async () => {
+                            const index = document.getElementById('editBabyIndex').value;
+                            const editedBaby = {
+                                name: document.getElementById('editBabyName').value,
+                                birthDate: document.getElementById('editBirthDate').value,
+                                motherName: document.getElementById('editMotherName').value,
+                                feedings: currentUser.babies[index].feedings
+                            };
+
+                            currentUser.babies[index] = editedBaby;
+
+                            try {
+                                await updateDoc(doc(db, "users", user.uid), {
+                                    babies: currentUser.babies
+                                });
+                                updateBabyList();
+                                updateBabySelect();
+                                updateBabyDropdown();
+                                editBabyModal.hide();
+                                editBabyConfirmationModal.show();
+                            } catch (error) {
+                                console.error("Erro ao atualizar bebê:", error);
+                                alert('Erro ao atualizar informações do bebê. Por favor, tente novamente.');
+                            }
+                        });
+
+                        // Botão OK no modal de confirmação de edição
+                        editConfirmationOkBtn.addEventListener('click', () => {
+                            editBabyConfirmationModal.hide();
+                            babyListModal.show();
+                        });
+
+                        // Adicionar funcionalidade de logout
+                        const logoutLink = document.getElementById('logoutLink');
+                        const logoutLinkMobile = document.getElementById('logoutLinkMobile');
+
+                        function logout(e) {
+                            e.preventDefault();
+                            signOut(auth).then(() => {
+                                console.log('Usuário deslogado com sucesso');
+                                window.location.href = 'login.html';
+                            }).catch((error) => {
+                                console.error("Erro ao fazer logout:", error);
+                            });
+                        }
+
+                        // Adicionar funcionalidade de logout para ambos os links
+                        if (logoutLink) {
+                            logoutLink.addEventListener('click', logout);
+                        }
+                        if (logoutLinkMobile) {
+                            logoutLinkMobile.addEventListener('click', logout);
+                        }
+
+                        // ... (resto do código existente) ...
+
+                    } catch (error) {
+                        console.error("Erro ao carregar dados do usuário:", error);
+                    }
+                } else {
+                    window.location.href = 'login.html';
+                }
+            });
+        });
+    </script>
     <script src="app.js"></script>
     <script>
         // Código para fechar o menu ao clicar em um item
@@ -248,25 +623,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             // ... código existente ...
-
-            const logoutLink = document.getElementById('logoutLink');
-            const logoutLinkMobile = document.getElementById('logoutLinkMobile');
-
-            function logout(e) {
-                e.preventDefault();
-                signOut(auth).then(() => {
-                    localStorage.removeItem('currentUser');
-                    window.location.href = 'login.html';
-                }).catch((error) => {
-                    console.error("Erro ao fazer logout:", error);
-                });
-            }
-
-            // Adicionar funcionalidade de logout para ambos os links
-            logoutLink.addEventListener('click', logout);
-            logoutLinkMobile.addEventListener('click', logout);
-
-            // ... resto do código existente ...
 
             function adjustBodyPadding() {
                 const navbar = document.querySelector('.navbar');
