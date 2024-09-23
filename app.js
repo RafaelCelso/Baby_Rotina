@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <th>Horário</th>
                                     <th>Duração</th>
                                     <th>Lado</th>
-                                    <th>Fórmula (ml)</th>
+                                    <th>Fórmula</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 function formatDate(dateString) {
                     const [year, month, day] = dateString.split('-');
-                    return `${day}/${month}/${year}`;
+                    return `${day}/${month}`;
                 }
 
                 function determineSide(time) {
