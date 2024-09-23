@@ -229,29 +229,8 @@
                 padding: 0.5rem 1rem;
             }
         }
-
-        /* Estilo para o cronômetro */
-        #timerContainer {
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 30px;
-            margin-bottom: 30px;
-        }
-
-        #timer {
-            font-size: 4rem;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .btn-group .btn {
-            font-size: 1.5rem;
-            padding: 10px 20px;
-        }
     </style>
-    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="app.js"></script>
 </head>
 
 <body>
@@ -333,17 +312,7 @@
         <!-- Calendário -->
         <div class="mb-4">
             <label for="dateSelect" class="form-label">Selecione a Data</label>
-            <input type="text" class="form-control" id="dateSelect">
-        </div>
-
-        <!-- Cronômetro -->
-        <div id="timerContainer" class="mb-4 text-center">
-            <div id="timer" class="display-1 mb-3">00:00:00</div>
-            <div class="btn-group" role="group" aria-label="Timer controls">
-                <button id="startTimer" class="btn btn-success btn-lg"><i class="fas fa-play"></i></button>
-                <button id="pauseTimer" class="btn btn-warning btn-lg" disabled><i class="fas fa-pause"></i></button>
-                <button id="stopTimer" class="btn btn-danger btn-lg" disabled><i class="fas fa-stop"></i></button>
-            </div>
+            <input type="date" class="form-control" id="dateSelect">
         </div>
 
         <!-- Formulário de registro de mamada -->
@@ -364,7 +333,9 @@
                 <i class="fas fa-baby-carriage me-2"></i>Registrar Mamada
             </button>
         </form>
-        <div id="feedingList" class="mt-4"></div>
+        <div id="feedingList" class="mt-4">
+            <!-- A tabela de histórico será inserida aqui -->
+        </div>
         <div id="totalFormula" class="alert alert-success mt-3"></div>
     </div>
 
@@ -554,6 +525,7 @@
                         const babySelect = document.getElementById('babySelect');
                         const selectedBabyName = document.getElementById('selectedBabyName');
                         const babyDropdown = document.getElementById('babyDropdown');
+                        const dateSelect = document.getElementById('dateSelect');
 
                         function updateBabyDropdown() {
                             babyDropdown.innerHTML = '';
@@ -622,23 +594,107 @@
 
                         // Função para exibir as mamadas do bebê selecionado
                         function displayFeedings(babyIndex) {
-                            // Implemente a lógica para exibir as mamadas aqui
-                            console.log(`Exibindo mamadas para o bebê de índice ${babyIndex}`);
+                            const baby = currentUser.babies[babyIndex];
+                            const selectedDate = dateSelect.value;
+                            feedingList.innerHTML = '';
+
+                            if (Array.isArray(baby.feedings) && baby.feedings.length > 0) {
+                                const table = document.createElement('table');
+                                table.className = 'table table-striped';
+                                table.innerHTML = `
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Horário</th>
+                                            <th>Duração</th>
+                                            <th>Fórmula (ml)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                `;
+
+                                const tbody = table.querySelector('tbody');
+
+                                baby.feedings.forEach(feeding => {
+                                    const row = document.createElement('tr');
+                                    const startDateTime = new Date(`${feeding.date}T${feeding.startTime}`);
+                                    const endDateTime = new Date(`${feeding.date}T${feeding.endTime}`);
+                                    const duration = Math.round((endDateTime - startDateTime) / (1000 * 60)); // duração em minutos
+
+                                    row.innerHTML = `
+                                        <td>${feeding.date}</td>
+                                        <td>${feeding.startTime} - ${feeding.endTime}</td>
+                                        <td>${duration} min</td>
+                                        <td>${feeding.formulaAmount}</td>
+                                    `;
+                                    tbody.appendChild(row);
+                                });
+
+                                feedingList.appendChild(table);
+                            } else {
+                                feedingList.innerHTML = '<p>Nenhuma mamada registrada para este bebê.</p>';
+                            }
                         }
 
-                        babySelect.addEventListener('change', async (e) => {
-                            const selectedIndex = parseInt(e.target.value);
-                            if (!isNaN(selectedIndex)) {
+                        babySelect.addEventListener('change', (e) => {
+                            const selectedIndex = e.target.value;
+                            if (selectedIndex !== '') {
                                 displayFeedings(selectedIndex);
-                                selectedBabyName.textContent = currentUser.babies[selectedIndex].name;
-                                
-                                // Atualizar o índice do bebê selecionado no Firestore
+                            }
+                        });
+
+                        dateSelect.value = new Date().toISOString().split('T')[0];
+                        let selectedDate = dateSelect.value;
+
+                        dateSelect.addEventListener('change', function() {
+                            selectedDate = this.value;
+                            displayFeedings(babySelect.value);
+                        });
+
+                        feedingForm.addEventListener('submit', async (e) => {
+                            e.preventDefault();
+                            
+                            const selectedBabyIndex = babySelect.value;
+                            if (selectedBabyIndex === '') {
+                                alert('Por favor, selecione um bebê');
+                                return;
+                            }
+
+                            const baby = currentUser.babies[selectedBabyIndex];
+                            const startTime = document.getElementById('startTime').value;
+                            const endTime = document.getElementById('endTime').value;
+                            const formulaAmount = parseInt(document.getElementById('formulaAmount').value) || 0;
+                            const selectedDate = dateSelect.value;
+
+                            if (!startTime || !endTime) {
+                                alert('Por favor, preencha os horários de início e fim da mamada');
+                                return;
+                            }
+
+                            const newFeeding = {
+                                startTime,
+                                endTime,
+                                formulaAmount,
+                                date: selectedDate
+                            };
+
+                            if (!Array.isArray(baby.feedings)) {
+                                baby.feedings = [];
+                            }
+                            baby.feedings.push(newFeeding);
+
+                            try {
                                 await updateDoc(doc(db, "users", user.uid), {
-                                    selectedBabyIndex: selectedIndex
+                                    babies: currentUser.babies
                                 });
-                            } else {
-                                feedingList.innerHTML = '';
-                                selectedBabyName.textContent = 'Nenhum bebê selecionado';
+
+                                alert('Mamada registrada com sucesso!');
+                                feedingForm.reset();
+                                displayFeedings(selectedBabyIndex);
+                            } catch (error) {
+                                console.error("Erro ao registrar mamada:", error);
+                                alert('Erro ao registrar mamada. Por favor, tente novamente.');
                             }
                         });
 
