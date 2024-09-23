@@ -255,20 +255,26 @@ document.addEventListener('DOMContentLoaded', () => {
                         date: selectedDate
                     };
 
-                    if (!baby.feedings) baby.feedings = [];
-                    baby.feedings.push(newFeeding);
+                    const editIndex = e.target.querySelector('button[type="submit"]').dataset.editIndex;
+
+                    if (editIndex !== undefined) {
+                        // Modo de edição
+                        baby.feedings[selectedDate][editIndex] = newFeeding;
+                    } else {
+                        // Novo registro
+                        if (!baby.feedings[selectedDate]) baby.feedings[selectedDate] = [];
+                        baby.feedings[selectedDate].push(newFeeding);
+                    }
 
                     try {
-                        await updateDoc(doc(db, "users", user.uid), {
-                            babies: currentUser.babies
-                        });
-
-                        alert('Mamada registrada com sucesso!');
+                        await updateUserData();
+                        alert(editIndex !== undefined ? 'Mamada atualizada com sucesso!' : 'Mamada registrada com sucesso!');
                         feedingForm.reset();
                         displayFeedings(selectedBabyIndex);
+                        cancelEdit(); // Resetar o formulário para o modo de novo registro
                     } catch (error) {
-                        console.error("Erro ao registrar mamada:", error);
-                        alert('Erro ao registrar mamada. Por favor, tente novamente.');
+                        console.error("Erro ao registrar/atualizar mamada:", error);
+                        alert('Erro ao registrar/atualizar mamada. Por favor, tente novamente.');
                     }
                 });
 
