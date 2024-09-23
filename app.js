@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const saveBabyBtn = document.getElementById('saveBabyBtn');
                 const babySelect = document.getElementById('babySelect');
                 const dateSelect = document.getElementById('dateSelect');
-                const totalFormula = document.getElementById('totalFormula');
                 const selectedBabyName = document.getElementById('selectedBabyName');
                 const babyDropdown = document.getElementById('babyDropdown');
                 
@@ -92,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 function displayFeedings(babyIndex) {
                     feedingList.innerHTML = '';
-                    totalFormula.innerHTML = '';
                     if (babyIndex === '') return;
 
                     const baby = currentUser.babies[babyIndex];
@@ -102,16 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const todayFeedings = baby.feedings[selectedDate];
                     todayFeedings.sort((a, b) => new Date(`1970-01-01T${a.startTime}`) - new Date(`1970-01-01T${b.startTime}`));
 
-                    let totalFormulaAmount = 0;
-                    let totalDurationMinutes = 0;
-
                     for (let i = 0; i < todayFeedings.length; i++) {
                         const feeding = todayFeedings[i];
                         const feedingEntry = document.createElement('div');
                         feedingEntry.classList.add('alert', 'alert-info', 'mt-2');
                         
                         const duration = calculateDuration(feeding.startTime, feeding.endTime);
-                        totalDurationMinutes += duration.totalMinutes;
 
                         let feedingContent = `
                             Início: ${feeding.startTime} - Fim: ${feeding.endTime}<br>
@@ -140,21 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         feedingEntry.innerHTML = feedingContent;
                         feedingList.appendChild(feedingEntry);
-
-                        totalFormulaAmount += feeding.formulaAmount || 0;
                     }
-
-                    const averageDurationMinutes = totalDurationMinutes / todayFeedings.length;
-                    const averageDuration = {
-                        hours: Math.floor(averageDurationMinutes / 60),
-                        minutes: Math.round(averageDurationMinutes % 60)
-                    };
-
-                    totalFormula.innerHTML = `
-                        <strong>Resumo do dia:</strong><br>
-                        Total de fórmula consumida: ${totalFormulaAmount} ml<br>
-                        Tempo médio de mamada: ${formatDuration(averageDuration)}
-                    `;
 
                     // Adicionar event listeners para os botões de editar e excluir
                     document.querySelectorAll('.edit-feeding').forEach(button => {
