@@ -201,8 +201,8 @@
 
         /* Estilo para o botão Registrar Mamada */
         .register-feeding-btn {
-            background-color: #ff6b6b;
-            border-color: #ff6b6b;
+            background-color: #28a745; /* Cor verde */
+            border-color: #28a745; /* Cor verde */
             color: white;
             font-size: 1.2rem;
             padding: 0.75rem 1.5rem;
@@ -211,15 +211,15 @@
         }
 
         .register-feeding-btn:hover, .register-feeding-btn:focus {
-            background-color: #ff5252;
-            border-color: #ff5252;
+            background-color: #218838; /* Cor verde mais escura */
+            border-color: #218838; /* Cor verde mais escura */
             transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.4) !important;
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.4) !important;
         }
 
         .register-feeding-btn:active {
             transform: translateY(-1px);
-            box-shadow: 0 5px 10px rgba(255, 107, 107, 0.4) !important;
+            box-shadow: 0 5px 10px rgba(40, 167, 69, 0.4) !important;
         }
 
         /* Ajuste para telas menores */
@@ -359,6 +359,12 @@
         </form>
         <div id="feedingList" class="mt-4">
             <!-- A tabela de histórico será inserida aqui -->
+        </div>
+        <!-- Controles de paginação -->
+        <div id="paginationControls" class="d-flex justify-content-center mt-3">
+            <button id="prevPage" class="btn btn-secondary me-2" disabled>Anterior</button>
+            <span id="pageInfo"></span>
+            <button id="nextPage" class="btn btn-secondary ms-2">Próximo</button>
         </div>
     </div>
 
@@ -525,71 +531,6 @@
         </div>
     </div>
 
-    <!-- Modal para editar mamada -->
-    <div class="modal fade" id="editFeedingModal" tabindex="-1" aria-labelledby="editFeedingModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editFeedingModalLabel">Editar Mamada</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editFeedingForm">
-                        <input type="hidden" id="editFeedingIndex">
-                        <div class="mb-3">
-                            <label for="editStartTime" class="form-label">Hora Inicial</label>
-                            <input type="time" class="form-control" id="editStartTime" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editEndTime" class="form-label">Hora Final</label>
-                            <input type="time" class="form-control" id="editEndTime" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editFormulaAmount" class="form-label">Quantidade de Fórmula (ml)</label>
-                            <input type="number" class="form-control" id="editFormulaAmount" min="0" step="1">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveEditFeedingBtn">Salvar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de confirmação de exclusão de mamada -->
-    <div class="modal fade" id="deleteFeedingConfirmationModal" tabindex="-1" aria-labelledby="deleteFeedingConfirmationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteFeedingConfirmationModalLabel">Confirmar Exclusão</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                    <p>Tem certeza que deseja excluir esta mamada?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteFeedingBtn">Excluir</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
-    <script src="app.js"></script>
-</body>
-
-</html>
-
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -683,46 +624,94 @@
                         // Função para exibir as mamadas do bebê selecionado
                         function displayFeedings(babyIndex) {
                             const baby = currentUser.babies[babyIndex];
-                            const selectedDate = dateSelect.value;
-                            feedingList.innerHTML = '';
+                            const feedings = baby.feedings || [];
+                            const itemsPerPage = 10;
+                            let currentPage = 1;
 
-                            if (Array.isArray(baby.feedings) && baby.feedings.length > 0) {
-                                const table = document.createElement('table');
-                                table.className = 'table table-striped';
-                                table.innerHTML = `
-                                    <thead>
-                                        <tr>
-                                            <th>Data</th>
-                                            <th>Horário</th>
-                                            <th>Duração</th>
-                                            <th>Fórmula (ml)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                `;
+                            // Ordenar os registros de mamadas do mais recente para o mais antigo
+                            feedings.sort((a, b) => {
+                                const dateA = new Date(`${a.date}T${a.startTime}`);
+                                const dateB = new Date(`${b.date}T${b.startTime}`);
+                                return dateB - dateA; // Ordem decrescente
+                            });
 
-                                const tbody = table.querySelector('tbody');
+                            function renderTable(page) {
+                                feedingList.innerHTML = '';
+                                const selectedDate = dateSelect.value; // Obter a data selecionada
+                                const filteredFeedings = feedings.filter(feeding => feeding.date === selectedDate); // Filtrar por data
+                                const start = (page - 1) * itemsPerPage;
+                                const end = start + itemsPerPage;
+                                const paginatedFeedings = filteredFeedings.slice(start, end);
 
-                                baby.feedings.forEach(feeding => {
-                                    const row = document.createElement('tr');
-                                    const startDateTime = new Date(`${feeding.date}T${feeding.startTime}`);
-                                    const endDateTime = new Date(`${feeding.date}T${feeding.endTime}`);
-                                    const duration = Math.round((endDateTime - startDateTime) / (1000 * 60)); // duração em minutos
-
-                                    row.innerHTML = `
-                                        <td>${feeding.date}</td>
-                                        <td>${feeding.startTime} - ${feeding.endTime}</td>
-                                        <td>${duration} min</td>
-                                        <td>${feeding.formulaAmount}</td>
+                                if (paginatedFeedings.length > 0) {
+                                    const table = document.createElement('table');
+                                    table.className = 'table table-striped';
+                                    table.innerHTML = `
+                                        <thead>
+                                            <tr>
+                                                <th>Data</th>
+                                                <th>Horário</th>
+                                                <th>Duração</th>
+                                                <th>Fórmula (ml)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
                                     `;
-                                    tbody.appendChild(row);
-                                });
 
-                                feedingList.appendChild(table);
-                            } else {
-                                feedingList.innerHTML = '<p>Nenhuma mamada registrada para este bebê.</p>';
+                                    const tbody = table.querySelector('tbody');
+
+                                    paginatedFeedings.forEach(feeding => {
+                                        const row = document.createElement('tr');
+                                        const startDateTime = new Date(`${feeding.date}T${feeding.startTime}`);
+                                        const endDateTime = new Date(`${feeding.date}T${feeding.endTime}`);
+                                        const duration = Math.round((endDateTime - startDateTime) / (1000 * 60)); // duração em minutos
+
+                                        row.innerHTML = `
+                                            <td>${feeding.date}</td>
+                                            <td>${feeding.startTime} - ${feeding.endTime}</td>
+                                            <td>${duration} min</td>
+                                            <td>${feeding.formulaAmount}</td>
+                                        `;
+                                        tbody.appendChild(row);
+                                    });
+
+                                    feedingList.appendChild(table);
+                                } else {
+                                    feedingList.innerHTML = '<p>Nenhuma mamada registrada para esta data.</p>';
+                                }
+
+                                updatePaginationControls(page, filteredFeedings.length);
                             }
+
+                            function updatePaginationControls(page, totalItems) {
+                                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                                document.getElementById('pageInfo').textContent = `Página ${page} de ${totalPages}`;
+                                document.getElementById('prevPage').disabled = page === 1;
+                                document.getElementById('nextPage').disabled = page === totalPages;
+                            }
+
+                            document.getElementById('prevPage').addEventListener('click', () => {
+                                if (currentPage > 1) {
+                                    currentPage--;
+                                    renderTable(currentPage);
+                                }
+                            });
+
+                            document.getElementById('nextPage').addEventListener('click', () => {
+                                const totalPages = Math.ceil(feedings.length / itemsPerPage);
+                                if (currentPage < totalPages) {
+                                    currentPage++;
+                                    renderTable(currentPage);
+                                }
+                            });
+
+                            dateSelect.addEventListener('change', function() {
+                                currentPage = 1; // Resetar para a primeira página ao mudar a data
+                                renderTable(currentPage);
+                            });
+
+                            renderTable(currentPage);
                         }
 
                         babySelect.addEventListener('change', (e) => {
