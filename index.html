@@ -556,6 +556,9 @@
                         const babyDropdown = document.getElementById('babyDropdown');
                         const dateSelect = document.getElementById('dateSelect');
 
+                        // Configurar a data atual no seletor de data
+                        dateSelect.value = new Date().toISOString().split('T')[0];
+
                         function updateBabyDropdown() {
                             babyDropdown.innerHTML = '';
                             if (currentUser.babies && currentUser.babies.length > 0) {
@@ -573,6 +576,7 @@
                                 // Selecionar o bebê salvo no perfil do usuário
                                 const selectedIndex = currentUser.selectedBabyIndex || 0;
                                 selectedBabyName.textContent = currentUser.babies[selectedIndex].name;
+                                displayFeedings(selectedIndex); // Chamar displayFeedings aqui
                             } else {
                                 selectedBabyName.textContent = 'Nenhum bebê cadastrado';
                             }
