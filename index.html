@@ -279,6 +279,77 @@
                 font-size: 0.9rem;
             }
         }
+
+        /* Estilos para os cards de estatísticas */
+        #feedingStats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        #feedingStats > div {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        #feedingStats .icon-container {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+
+        #feedingStats h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.25rem;
+        }
+
+        #feedingStats p {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* Cores específicas para cada card */
+        #feedingStats > div:nth-child(1) .icon-container {
+            background-color: #ebf8ff;
+        }
+        #feedingStats > div:nth-child(1) i {
+            color: #3182ce;
+        }
+        #feedingStats > div:nth-child(1) p {
+            color: #2b6cb0;
+        }
+
+        #feedingStats > div:nth-child(2) .icon-container {
+            background-color: #f0fff4;
+        }
+        #feedingStats > div:nth-child(2) i {
+            color: #38a169;
+        }
+        #feedingStats > div:nth-child(2) p {
+            color: #2f855a;
+        }
+
+        #feedingStats > div:nth-child(3) .icon-container {
+            background-color: #faf5ff;
+        }
+        #feedingStats > div:nth-child(3) i {
+            color: #805ad5;
+        }
+        #feedingStats > div:nth-child(3) p {
+            color: #6b46c1;
+        }
     </style>
     <script type="module" src="app.js"></script>
 </head>
@@ -391,6 +462,35 @@
             <button id="prevPage" class="btn btn-secondary me-2" disabled>Anterior</button>
             <span id="pageInfo"></span>
             <button id="nextPage" class="btn btn-secondary ms-2">Próximo</button>
+        </div>
+        <div id="feedingStats" class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-lg shadow-md flex items-center">
+                <div class="bg-blue-100 p-3 rounded-full mr-4">
+                    <i class="fas fa-baby-carriage text-blue-500 text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700">Total de Mamadas</h3>
+                    <p id="totalFeedings" class="text-2xl font-bold text-blue-600">0</p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-md flex items-center">
+                <div class="bg-green-100 p-3 rounded-full mr-4">
+                    <i class="fas fa-clock text-green-500 text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700">Média de Duração</h3>
+                    <p id="averageDuration" class="text-2xl font-bold text-green-600">0 min</p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-md flex items-center">
+                <div class="bg-purple-100 p-3 rounded-full mr-4">
+                    <i class="fas fa-tint text-purple-500 text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700">Total de Fórmula</h3>
+                    <p id="totalFormula" class="text-2xl font-bold text-purple-600">0 ml</p>
+                </div>
+            </div>
         </div>
     </div>
 
