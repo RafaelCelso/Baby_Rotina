@@ -100,14 +100,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     const todayFeedings = baby.feedings[selectedDate];
                     todayFeedings.sort((a, b) => new Date(`1970-01-01T${a.startTime}`) - new Date(`1970-01-01T${b.startTime}`));
 
+                    let totalFeedings = todayFeedings.length;
+                    let totalDuration = 0;
+                    let totalFormula = 0;
+
                     for (let i = 0; i < todayFeedings.length; i++) {
                         const feeding = todayFeedings[i];
                         const feedingEntry = document.createElement('div');
                         feedingEntry.classList.add('alert', 'alert-info', 'mt-2');
                         
                         const duration = calculateDuration(feeding.startTime, feeding.endTime);
+                        totalDuration += duration.totalMinutes;
+                        totalFormula += feeding.formulaAmount || 0;
 
-                        let feedingContent = `
+                        // Exibir as informações da mamada
+                        feedingEntry.innerHTML = `
                             Início: ${feeding.startTime} - Fim: ${feeding.endTime}<br>
                             Duração: ${formatDuration(duration)}<br>
                             Fórmula: ${feeding.formulaAmount || 0} ml
@@ -116,61 +123,25 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <button class="btn btn-sm btn-danger delete-feeding" data-index="${i}">Excluir</button>
                             </div>
                         `;
-
-                        if (i > 0) {
-                            const previousFeeding = todayFeedings[i - 1];
-                            const currentFeedingTime = new Date(`1970-01-01T${feeding.startTime}`);
-                            const previousFeedingTime = new Date(`1970-01-01T${previousFeeding.startTime}`);
-                            const timeDiff = (currentFeedingTime - previousFeedingTime) / (1000 * 60 * 60); // Diferença em horas
-
-                            if (timeDiff < 3) {
-                                feedingContent += `
-                                    <div class="alert alert-danger mt-2 mb-0">
-                                        Atenção: Esta mamada ocorreu ${timeDiff.toFixed(2)} horas após a anterior, menos que o intervalo recomendado de 3 horas.
-                                    </div>
-                                `;
-                            }
-                        }
-
-                        feedingEntry.innerHTML = feedingContent;
                         feedingList.appendChild(feedingEntry);
                     }
 
-                    // Adicionar event listeners para os botões de editar e excluir
-                    document.querySelectorAll('.edit-feeding').forEach(button => {
-                        button.addEventListener('click', editFeeding);
-                    });
-
-                    document.querySelectorAll('.delete-feeding').forEach(button => {
-                        button.addEventListener('click', deleteFeeding);
-                    });
+                    // Atualizar os cards
+                    updateCards(totalFeedings, totalDuration, totalFormula);
                 }
 
-                function editFeeding(event) {
-                    const index = event.target.dataset.index;
-                    const babyIndex = babySelect.value;
-                    const baby = currentUser.babies[babyIndex];
-                    const feeding = baby.feedings[selectedDate][index];
+                // Função para atualizar os cards
+                function updateCards(totalFeedings, totalDuration, totalFormula) {
+                    const totalFeedingsCard = document.getElementById('totalFeedings');
+                    const averageDurationCard = document.getElementById('averageDuration');
+                    const totalFormulaCard = document.getElementById('totalFormula');
 
-                    document.getElementById('startTime').value = feeding.startTime;
-                    document.getElementById('endTime').value = feeding.endTime;
-                    document.getElementById('formulaAmount').value = feeding.formulaAmount || '';
+                    totalFeedingsCard.textContent = totalFeedings;
 
-                    // Atualizar o formulário para modo de edição
-                    const submitButton = feedingForm.querySelector('button[type="submit"]');
-                    submitButton.textContent = 'Atualizar Mamada';
-                    submitButton.dataset.editIndex = index;
+                    const averageDuration = totalFeedings > 0 ? Math.round(totalDuration / totalFeedings) : 0;
+                    averageDurationCard.textContent = `${averageDuration} min`;
 
-                    // Adicionar botão "Cancelar"
-                    const cancelButton = document.createElement('button');
-                    cancelButton.textContent = 'Cancelar';
-                    cancelButton.type = 'button';
-                    cancelButton.classList.add('btn', 'btn-secondary', 'ms-2');
-                    cancelButton.addEventListener('click', cancelEdit);
-                    submitButton.parentNode.insertBefore(cancelButton, submitButton.nextSibling);
-
-                    // Rolar até o formulário
-                    feedingForm.scrollIntoView({ behavior: 'smooth' });
+                    totalFormulaCard.textContent = `${totalFormula} ml`;
                 }
 
                 function cancelEdit() {

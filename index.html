@@ -812,6 +812,27 @@
                                 }
 
                                 updatePaginationControls(page, filteredFeedings.length);
+                                updateFeedingStats(filteredFeedings); // Atualiza os cards com as estatísticas
+                            }
+
+                            function updateFeedingStats(filteredFeedings) {
+                                const totalFeedings = filteredFeedings.length;
+                                let totalDuration = 0;
+                                let totalFormula = 0;
+
+                                filteredFeedings.forEach(feeding => {
+                                    const startDateTime = new Date(`${feeding.date}T${feeding.startTime}`);
+                                    const endDateTime = new Date(`${feeding.date}T${feeding.endTime}`);
+                                    const duration = Math.round((endDateTime - startDateTime) / (1000 * 60)); // duração em minutos
+                                    totalDuration += duration;
+                                    totalFormula += feeding.formulaAmount || 0;
+                                });
+
+                                const averageDuration = totalFeedings > 0 ? Math.round(totalDuration / totalFeedings) : 0;
+
+                                document.getElementById('totalFeedings').textContent = totalFeedings;
+                                document.getElementById('averageDuration').textContent = `${averageDuration} min`;
+                                document.getElementById('totalFormula').textContent = `${totalFormula} ml`;
                             }
 
                             function updatePaginationControls(page, totalItems) {
