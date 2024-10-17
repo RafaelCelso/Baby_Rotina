@@ -683,7 +683,10 @@
                         const dateSelect = document.getElementById('dateSelect');
 
                         // Configurar a data atual no seletor de data
-                        dateSelect.value = new Date().toISOString().split('T')[0];
+                        const now = new Date();
+                        const offset = -3; // UTC-3 para horário de Brasília
+                        const localDate = new Date(now.getTime() + (offset * 60 * 60 * 1000));
+                        dateSelect.value = localDate.toISOString().split('T')[0];
 
                         function updateBabyDropdown() {
                             babyDropdown.innerHTML = '';
